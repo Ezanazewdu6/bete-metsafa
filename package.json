@@ -1,0 +1,27 @@
+{
+  "name": "bete-metsahaf",
+  "version": "1.1.0",
+  "description": "Bete Metsahaf - Library and Librarian Attendance Management System",
+  "main": "server.js",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "setup-db": "node setup-db.js",
+    "seed-books": "node seed-books.js",
+    "clear-data": "node clear-data.js",
+    "create-admin": "node create-admin.js",
+    "test-db": "node test-connection.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.9.7",
+    "pg": "^8.11.5"
+  }
+}

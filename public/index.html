@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bete Metsahaf - Library Management System</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      /* Exact Recommended Palette */
+      --navy: #172D40;
+      --navy-light: #234562;
+      --navy-subtle: #edf2f6;
+      --gold: #C2A46D;
+      --gold-light: #dfc89d;
+      --gold-subtle: #fbf7ee;
+      --ivory: #F7F4EC;
+      --white: #FFFFFF;
+      --sage: #687C70;
+      --sage-subtle: #edf2ef;
+
+      /* Design Tokens */
+      --primary: var(--navy);
+      --primary-light: var(--navy-light);
+      --primary-subtle: var(--navy-subtle);
+      --accent: var(--gold);
+      --accent-light: var(--gold-light);
+      --accent-subtle: var(--gold-subtle);
+      --bg: var(--ivory);
+      --surface: var(--white);
+      --text: var(--navy);
+      --text-muted: #607282;
+      --border: #e5ded3;
+      --danger: #b91c1c;
+      --danger-bg: #fdf2f2;
+      --success: var(--sage);
+      --success-bg: var(--sage-subtle);
+      --warning: var(--gold);
+      --warning-bg: var(--gold-subtle);
+      --info: #2a5c82;
+      --info-bg: #edf4f9;
+      --radius: 10px;
+      --shadow-sm: 0 1px 3px 0 rgba(23, 45, 64, 0.05);
+      --shadow: 0 4px 8px -1px rgba(23, 45, 64, 0.08), 0 2px 4px -2px rgba(23, 45, 64, 0.04);
+      --shadow-lg: 0 12px 24px -4px rgba(23, 45, 64, 0.12);
+      --sidebar-width: 250px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4 { margin: 0 0 0.5rem 0; font-weight: 600; color: var(--navy); }
+    .brand-font { font-family: 'Cinzel', serif; }
+    p { margin: 0 0 1rem 0; }
+
+    /* Auth / Login View */
+    #login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: radial-gradient(circle at 10% 20%, #ece5d8 0%, var(--bg) 90%);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-header i {
+      font-size: 2.75rem;
+      color: var(--gold);
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-header h2 {
+      font-size: 1.6rem;
+      margin-bottom: 0.25rem;
+      color: var(--navy);
+    }
+
+    .auth-header p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    /* Forms & Inputs */
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.825rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: var(--navy);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.65rem 0.85rem;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--navy);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(194, 164, 109, 0.25);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Buttons */
+    button, .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.65rem 1rem;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    button:disabled, .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: #ffffff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--navy-light);
+    }
+
+    .btn-gold {
+      background: var(--gold);
+      color: #ffffff;
+    }
+    .btn-gold:hover:not(:disabled) {
+      background: #b39257;
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--navy);
+      border-color: var(--border);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: #cbd5e1;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #ffffff;
+    }
+    .btn-danger:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      border-radius: 4px;
+    }
+
+    /* App Shell */
+    #app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    aside {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--navy);
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      transition: transform 0.2s ease;
+      border-right: 1px solid rgba(194, 164, 109, 0.2);
+    }
+
+    .sidebar-brand {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-brand i {
+      font-size: 1.5rem;
+      color: var(--gold);
+    }
+
+    .sidebar-brand h3 {
+      font-size: 1.15rem;
+      color: #ffffff;
+      margin: 0;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.05em;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0.75rem;
+      overflow-y: auto;
+    }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: #d1d9e0;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 0.25rem;
+      transition: all 0.15s ease;
+    }
+
+    .sidebar-nav a i {
+      font-size: 1.15rem;
+    }
+
+    .sidebar-nav a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .sidebar-nav a.on {
+      background: var(--navy-light);
+      color: #ffffff;
+      font-weight: 600;
+      border-left: 3px solid var(--gold);
+    }
+
+    /* Main Content */
+    main {
+      margin-left: var(--sidebar-width);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .header-search {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .header-search i {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .header-search input {
+      padding-left: 2.35rem;
+      border-radius: 20px;
+      background: var(--bg);
+      border-color: var(--border);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: var(--primary-subtle);
+      color: var(--navy);
+      padding: 0.4rem 0.75rem;
+      border-radius: 20px;
+    }
+
+    .user-badge .role-pill {
+      font-size: 0.725rem;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      background: var(--gold);
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    /* View Container */
+    #view {
+      flex: 1;
+      padding: 1.75rem;
+    }
+
+    .view-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    /* Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.navy { background: var(--primary-subtle); color: var(--navy); }
+    .stat-icon.gold { background: var(--gold-subtle); color: var(--gold); }
+    .stat-icon.sage { background: var(--sage-subtle); color: var(--sage); }
+    .stat-icon.rose { background: var(--danger-bg); color: var(--danger); }
+
+    .stat-info .stat-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .stat-info .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    /* Tables */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: #f4efe6;
+      color: var(--navy);
+      font-size: 0.775rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+      vertical-align: middle;
+      color: var(--text);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: #faf7f2;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .badge-present { background: var(--sage-subtle); color: #3b5c4b; }
+    .badge-late { background: var(--gold-subtle); color: #8c7241; }
+    .badge-half-day { background: var(--primary-subtle); color: var(--navy); }
+    .badge-absent { background: var(--danger-bg); color: #be123c; }
+    .badge-borrowed { background: var(--gold-subtle); color: #8c7241; }
+    .badge-returned { background: #f0ece3; color: var(--text-muted); }
+    .badge-overdue { background: var(--danger-bg); color: #b91c1c; }
+    .badge-active { background: var(--sage-subtle); color: #3b5c4b; }
+    .badge-inactive { background: #f0ece3; color: var(--text-muted); }
+
+    /* Action Toolbar Row */
+    .filter-bar {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .filter-bar input, .filter-bar select {
+      max-width: 200px;
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(23, 45, 64, 0.55);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      animation: modalFadeIn 0.2s ease-out;
+      border: 1px solid var(--border);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 1.15rem;
+      margin: 0;
+      color: var(--navy);
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: var(--bg);
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Toast System */
+    #toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toast {
+      background: var(--navy);
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      animation: toastSlideIn 0.25s ease-out;
+      max-width: 360px;
+      border-left: 4px solid var(--gold);
+    }
+
+    .toast.toast-error {
+      background: #881337;
+      border-left-color: #f43f5e;
+    }
+
+    .toast.toast-success {
+      background: #234032;
+      border-left-color: var(--sage);
+    }
+
+    @keyframes toastSlideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Mobile Responsive */
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--navy);
+      font-size: 1.35rem;
+      cursor: pointer;
+      padding: 0.25rem;
+    }
+
+    @media (max-width: 860px) {
+      .mobile-menu-btn { display: inline-flex; }
+      aside {
+        transform: translateX(-100%);
+      }
+      aside.open {
+        transform: translateX(0);
+      }
+      main {
+        margin-left: 0;
+      }
+      .filter-bar input, .filter-bar select {
+        max-width: 100%;
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================= -->
+  <!-- LOGIN VIEW -->
+  <!-- ========================================================================= -->
+  <div id="login-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <i class="bi bi-book-half"></i>
+        <h2 class="brand-font">Bete Metsahaf</h2>
+        <p>Library & Attendance Management System</p>
+      </div>
+
+      <!-- Sign In Section -->
+      <div id="signin-section">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input id="login-email" type="email" placeholder="name@example.com" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        <button id="login-btn" class="btn-primary" style="width: 100%; margin-top: 0.5rem;" onclick="handleLogin()">
+          <i class="bi bi-box-arrow-in-right"></i> Sign In
+        </button>
+
+      </div>
+
+      <p id="login-error" style="color: var(--danger); font-size: 0.85rem; margin-top: 1rem; text-align: center; display: none;"></p>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN APPLICATION SHELL -->
+  <!-- ========================================================================= -->
+  <div id="app">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar">
+      <div class="sidebar-brand">
+        <i class="bi bi-book-half"></i>
+        <h3>Bete Metsahaf</h3>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main>
+      <header>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+          <div class="header-search">
+            <i class="bi bi-search"></i>
+            <input id="global-search" placeholder="Quick search books..." onkeydown="if(event.key==='Enter')navigateTo('books', this.value)">
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="user-badge">
+            <i class="bi bi-person-circle"></i>
+            <span id="user-display-name">User</span>
+            <span class="role-pill" id="user-role-pill">Admin</span>
+          </div>
+          <button class="btn-secondary btn-sm" onclick="handleLogout()" title="Sign Out">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Active View Content -->
+      <div id="view">
+        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+          <i class="bi bi-arrow-repeat" style="font-size: 2rem; animation: spin 1s infinite linear; display: inline-block;"></i>
+          <p style="margin-top: 1rem;">Loading...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- REUSABLE MODALS -->
+  <!-- ========================================================================= -->
+
+  <!-- Modal: Book Add / Edit -->
+  <div id="book-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="book-modal-title">Add Book</h3>
+        <button class="modal-close" onclick="closeModal('book-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="bm-id">
+        <div class="form-group">
+          <label>ISBN *</label>
+          <input id="bm-isbn" placeholder="e.g. 9780132350884">
+        </div>
+        <div class="form-group">
+          <label>Title *</label>
+          <input id="bm-title" placeholder="Book title">
+        </div>
+        <div class="form-group">
+          <label>Author *</label>
+          <input id="bm-author" placeholder="Author name(s)">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="bm-category"></select>
+          </div>
+          <div class="form-group">
+            <label>Total Copies *</label>
+            <input id="bm-copies" type="number" min="1" value="1">
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label>Shelf Location (Physical Placement) *</label>
+            <input id="bm-shelf" placeholder="e.g. A1, B3, Section-2">
+            <div style="display: flex; gap: 0.35rem; margin-top: 0.35rem; flex-wrap: wrap;">
+              <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center;">Quick:</span>
+              <button type="button" class="btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="$('bm-shelf').value='A1'">A1</button>
+              <button type="button" class="btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="$('bm-shelf').value='A2'">A2</button>
+              <button type="button" class="btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="$('bm-shelf').value='B1'">B1</button>
+              <button type="button" class="btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="$('bm-shelf').value='B2'">B2</button>
+              <button type="button" class="btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="$('bm-shelf').value='B3'">B3</button>
+              <button type="button" class="btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="$('bm-shelf').value='C1'">C1</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Publication Year</label>
+            <input id="bm-year" type="number" placeholder="e.g. 2024">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Publisher</label>
+          <input id="bm-publisher" placeholder="Publisher name">
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="bm-desc" placeholder="Brief summary or description..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('book-modal')">Cancel</button>
+        <button class="btn-primary" onclick="submitBookModal()"><i class="bi bi-check2"></i> Save Book</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Attendance Correction (Admin) -->
+  <div id="attendance-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Correct Attendance Record</h3>
+        <button class="modal-close" onclick="closeModal('attendance-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="am-id">
+        <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Corrections require an audit justification and are logged with administrative tracking.
+        </p>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="am-status">
+            <option value="Present">Present</option>
+            <option value="Late">Late</option>
+            <option value="Half-day">Half-day</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Reason for Correction *</label>
+          <textarea id="am-reason" placeholder="e.g. System glitch during check-in, verified on card reader"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('attendance-modal')">Cancel</button>
+        <button class="btn-primary" onclick="submitAttendanceModal()"><i class="bi bi-save"></i> Save Correction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Attendance Audit Log -->
+  <div id="audit-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3>Attendance Audit History</h3>
+        <button class="modal-close" onclick="closeModal('audit-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="audit-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('audit-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Reset Password -->
+  <div id="reset-password-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Reset Librarian Password</h3>
+        <button class="modal-close" onclick="closeModal('reset-password-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="rpm-id">
+        <div class="form-group">
+          <label>New Password (min 8 characters) *</label>
+          <input type="password" id="rpm-password" placeholder="••••••••">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('reset-password-modal')">Cancel</button>
+        <button class="btn-primary" onclick="submitResetPassword()"><i class="bi bi-key"></i> Update Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmation Dialog -->
+  <div id="confirm-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 id="confirm-title">Confirm Action</h3>
+        <button class="modal-close" onclick="closeModal('confirm-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message" style="margin: 0;"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('confirm-modal')">Cancel</button>
+        <button id="confirm-action-btn" class="btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Renew Loan / Extend Due Date -->
+  <div id="renew-modal" class="modal-backdrop">
+    <div class="modal-box" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3><i class="bi bi-arrow-repeat" style="color: var(--gold);"></i> Renew / Extend Book Loan</h3>
+        <button class="modal-close" onclick="closeModal('renew-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="renew-borrowing-id">
+        <div style="background: var(--bg); padding: 0.85rem 1rem; border-radius: var(--radius); margin-bottom: 1.25rem; border: 1px solid var(--border);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.04em;">Selected Borrowing</div>
+          <div id="renew-book-title" style="font-weight: 700; color: var(--navy); font-size: 1.05rem; margin-top: 0.25rem;"></div>
+          <div style="margin-top: 0.35rem; font-size: 0.875rem; color: var(--text-muted);">
+            Borrower: <b id="renew-borrower-name" style="color: var(--navy);">-</b>
+          </div>
+          <div style="display: flex; gap: 1.25rem; margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+            <div>Current Due Date: <b id="renew-current-due" style="color: var(--navy);"></b></div>
+            <div>Times Renewed: <b id="renew-count-display" style="color: var(--gold);"></b></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Choose Extension Duration *</label>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+            <button type="button" id="btn-renew-7" class="btn-secondary btn-sm" onclick="setRenewDays(7)">
+              <i class="bi bi-calendar-plus"></i> +7 Days (1 Week)
+            </button>
+            <button type="button" id="btn-renew-14" class="btn-primary btn-sm" onclick="setRenewDays(14)">
+              <i class="bi bi-calendar-check"></i> +14 Days (Standard)
+            </button>
+            <button type="button" class="btn-secondary btn-sm" onclick="setRenewDays(30)">
+              +30 Days (1 Month)
+            </button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Custom Days:</span>
+            <input type="number" id="renew-days" min="1" max="90" value="14" style="max-width: 120px;" oninput="updateRenewPreview()">
+          </div>
+        </div>
+
+        <div id="renew-max-warning" style="display: none; color: var(--danger); background: var(--danger-bg); padding: 0.75rem 1rem; border-radius: 6px; margin-top: 1rem; font-size: 0.875rem;">
+          <i class="bi bi-exclamation-octagon-fill"></i> <b>Maximum Renewal Limit Reached:</b> This book has reached the maximum 5 renewals and cannot be extended further. It must be returned.
+        </div>
+
+        <div style="background: var(--primary-subtle); padding: 0.85rem 1rem; border-radius: 6px; font-size: 0.9rem; color: var(--navy); display: flex; align-items: center; justify-content: space-between; margin-top: 1rem;">
+          <span><i class="bi bi-calendar-event" style="color: var(--gold);"></i> <b>New Extended Due Date:</b></span>
+          <b id="renew-new-due-preview" style="font-size: 1.1rem; color: var(--navy);">-</b>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('renew-modal')">Cancel</button>
+        <button id="renew-submit-btn" class="btn-primary" onclick="submitRenewModal()"><i class="bi bi-check2-circle"></i> Confirm Extension</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- ========================================================================= -->
+  <!-- APPLICATION LOGIC -->
+  <!-- ========================================================================= -->
+  <script>
+    // State Management
+    const state = {
+      token: localStorage.getItem('jwt_token') || null,
+      role: localStorage.getItem('user_role') || null,
+      name: localStorage.getItem('user_name') || null,
+      currentView: 'dashboard',
+      categories: [],
+      booksCache: [],
+      currentBorrowings: [],
+      recentTransactions: [],
+      monthlyChart: null,
+      categoryChart: null,
+      borrowingFilter: '',
+      borrowingSearch: ''
+    };
+
+    const $ = id => document.getElementById(id);
+
+    // Times are stored in UTC and shown in the library's timezone (from /api/config)
+    state.tz = 'UTC';
+    function fmtTime(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      if (isNaN(d)) return '-';
+      return d.toLocaleTimeString('en-GB', { timeZone: state.tz, hour: '2-digit', minute: '2-digit', hour12: false });
+    }
+    function fmtDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      if (isNaN(d)) return '-';
+      return d.toLocaleDateString('en-CA', { timeZone: state.tz }); // YYYY-MM-DD
+    }
+    function fmtDateTime(iso) {
+      return iso ? `${fmtDate(iso)} ${fmtTime(iso)}` : '-';
+    }
+
+    function getFormattedToday() {
+      return new Date().toLocaleDateString('en-US', {
+        timeZone: state.tz,
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Escape helper to prevent XSS
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Toast Notifications
+    function showToast(message, type = 'info') {
+      const container = $('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'error' ? 'toast-error' : type === 'success' ? 'toast-success' : ''}`;
+      
+      const icon = type === 'error' ? 'bi-exclamation-triangle-fill' : type === 'success' ? 'bi-check-circle-fill' : 'bi-info-circle-fill';
+      toast.innerHTML = `<i class="bi ${icon}"></i> <span>${escapeHtml(message)}</span>`;
+      
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      $(id).classList.add('active');
+    }
+    function closeModal(id) {
+      $(id).classList.remove('active');
+    }
+
+    function confirmDialog(title, message, onConfirm) {
+      $('confirm-title').textContent = title;
+      $('confirm-message').textContent = message;
+      $('confirm-action-btn').onclick = async () => {
+        closeModal('confirm-modal');
+        await onConfirm();
+      };
+      openModal('confirm-modal');
+    }
+
+    // API Client
+    async function apiRequest(endpoint, method = 'GET', data = null) {
+      const headers = { 'Content-Type': 'application/json' };
+      if (state.token) {
+        headers['Authorization'] = `Bearer ${state.token}`;
+      }
+
+      const options = { method, headers };
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+
+      try {
+        const res = await fetch(`/api${endpoint}`, options);
+        const json = await res.json().catch(() => ({}));
+
+        if (res.status === 401 && state.token) {
+          handleLogout();
+          throw new Error('Session expired. Please log in again.');
+        }
+
+        if (!res.ok) {
+          throw new Error(json.error || 'Server request failed');
+        }
+
+        return json;
+      } catch (err) {
+        showToast(err.message, 'error');
+        throw err;
+      }
+    }
+
+    // Authentication Handlers
+    async function handleLogin() {
+      const email = $('login-email').value.trim();
+      const password = $('login-password').value;
+      const errorEl = $('login-error');
+
+      if (!email || !password) {
+        errorEl.textContent = 'Please enter both email and password';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        const data = await apiRequest('/auth/login', 'POST', { email, password });
+        state.token = data.token;
+        state.role = data.role;
+        state.name = data.name;
+
+        localStorage.setItem('jwt_token', data.token);
+        localStorage.setItem('user_role', data.role);
+        localStorage.setItem('user_name', data.name);
+
+        initApp();
+        showToast(`Welcome back, ${data.name}!`, 'success');
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function handleLogout() {
+      localStorage.clear();
+      state.token = null;
+      state.role = null;
+      state.name = null;
+      location.reload();
+    }
+
+    // Navigation and Shell
+    function initApp() {
+      $('login-container').style.display = 'none';
+      $('app').style.display = 'block';
+
+      $('user-display-name').textContent = state.name;
+      $('user-role-pill').textContent = state.role;
+
+      const navItems = [
+        { id: 'dashboard', icon: 'speedometer2', label: 'Dashboard' },
+        { id: 'shelfFinder', icon: 'geo-alt-fill', label: 'Shelf Locator' },
+        { id: 'books', icon: 'book', label: 'Book Catalog' },
+        { id: 'borrowings', icon: 'arrow-left-right', label: 'Borrowings' },
+        { id: 'attendance', icon: 'clock-history', label: 'Attendance' }
+      ];
+
+      if (state.role === 'admin') {
+        navItems.push({ id: 'librarians', icon: 'people', label: 'Librarians' });
+        navItems.push({ id: 'settings', icon: 'gear-fill', label: 'System Settings' });
+      }
+
+      $('sidebar-nav').innerHTML = navItems.map(item => `
+        <a id="nav-${item.id}" onclick="navigateTo('${item.id}')">
+          <i class="bi bi-${item.icon}"></i> ${item.label}
+        </a>
+      `).join('');
+
+      navigateTo('dashboard');
+    }
+
+    function toggleSidebar() {
+      $('sidebar').classList.toggle('open');
+    }
+
+    async function navigateTo(viewId, arg = null) {
+      state.currentView = viewId;
+      document.querySelectorAll('.sidebar-nav a').forEach(a => {
+        a.classList.toggle('on', a.id === `nav-${viewId}`);
+      });
+
+      // Close mobile sidebar if open
+      $('sidebar').classList.remove('open');
+
+      $('view').innerHTML = `
+        <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+          <i class="bi bi-arrow-repeat" style="font-size: 2rem; animation: spin 1s infinite linear; display: inline-block;"></i>
+          <p style="margin-top: 1rem;">Loading...</p>
+        </div>
+      `;
+
+      try {
+        if (views[viewId]) {
+          await views[viewId](arg);
+        }
+      } catch (err) {
+        console.error('View load error:', err);
+        $('view').innerHTML = `
+          <div style="text-align: center; padding: 4rem 1.5rem; color: var(--text-muted);">
+            <i class="bi bi-exclamation-triangle" style="font-size: 2.5rem; color: var(--danger); display: block; margin-bottom: 0.75rem;"></i>
+            <h3 style="color: var(--navy); margin-bottom: 0.5rem;">Failed to load view</h3>
+            <p style="margin-bottom: 1.25rem;">${escapeHtml(err.message || 'An error occurred while loading this section.')}</p>
+            <button class="btn-primary" onclick="navigateTo('${viewId}')"><i class="bi bi-arrow-clockwise"></i> Try Again</button>
+          </div>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // VIEWS IMPLEMENTATION
+    // =========================================================================
+
+    const views = {
+      // 1. Dashboard View (Customized for Admin & Librarian)
+      async dashboard() {
+        const data = await apiRequest('/dashboard');
+        state.recentTransactions = data.recent || [];
+
+        // Cleanup existing Chart.js instances
+        if (state.monthlyChart) {
+          state.monthlyChart.destroy();
+          state.monthlyChart = null;
+        }
+        if (state.categoryChart) {
+          state.categoryChart.destroy();
+          state.categoryChart = null;
+        }
+
+        // ---------------------------------------------------------------------
+        // 1. ADMIN DASHBOARD
+        // ---------------------------------------------------------------------
+        if (state.role === 'admin') {
+          $('view').innerHTML = `
+            <!-- Admin Welcome Banner -->
+            <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--navy) 0%, #244663 100%); color: #FFFFFF; border: none; padding: 1.6rem 2rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                  <span style="background: rgba(194, 164, 109, 0.25); color: #dfc89d; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Admin Portal</span>
+                  <h2 style="color: #FFFFFF; font-size: 1.65rem; margin: 0.5rem 0 0.25rem 0;" class="brand-font">Welcome, ${escapeHtml(state.name || 'Administrator')}</h2>
+                  <p style="color: var(--gold-light); font-size: 0.9rem; margin: 0; font-weight: 500;">
+                    <i class="bi bi-calendar3"></i> Today is ${getFormattedToday()}
+                  </p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                  <button class="btn-gold" onclick="openBookModal()"><i class="bi bi-plus-lg"></i> Add Book</button>
+                  <button class="btn" style="background: rgba(255,255,255,0.12); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.25);" onclick="navigateTo('borrowings')"><i class="bi bi-arrow-left-right"></i> Issue Book</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Books & Circulation KPIs (Clickable) -->
+            <div class="cards-grid">
+              <div class="card stat-card" onclick="navigateTo('books')" style="cursor: pointer;" title="View all books">
+                <div class="stat-icon navy"><i class="bi bi-book"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Total Books</div>
+                  <div class="stat-value">${data.total_books} <span style="font-size:0.8rem; font-weight:500; color:var(--text-muted); display:block;">(${data.total_titles || 0} unique titles)</span></div>
+                </div>
+              </div>
+              <div class="card stat-card" onclick="navigateTo('books')" style="cursor: pointer;" title="View book catalog">
+                <div class="stat-icon sage"><i class="bi bi-check-circle-fill"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Available Books</div>
+                  <div class="stat-value" style="color: var(--sage);">${data.available_books}</div>
+                </div>
+              </div>
+              <div class="card stat-card" onclick="setBorrowingFilter('borrowed')" style="cursor: pointer;" title="View active loans">
+                <div class="stat-icon gold"><i class="bi bi-box-arrow-up-right"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Active Loans</div>
+                  <div class="stat-value">${data.borrowed_books}</div>
+                </div>
+              </div>
+              <div class="card stat-card" onclick="setBorrowingFilter('overdue')" style="cursor: pointer;" title="View overdue loans">
+                <div class="stat-icon rose"><i class="bi bi-alarm-fill"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Overdue Books</div>
+                  <div class="stat-value" style="color: var(--danger);">${data.overdue_books}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Staff Management KPIs -->
+            <div class="cards-grid">
+              <div class="card stat-card" onclick="navigateTo('librarians')" style="cursor: pointer;" title="Manage librarians">
+                <div class="stat-icon navy"><i class="bi bi-people-fill"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Total Librarians</div>
+                  <div class="stat-value">${data.total_librarians}</div>
+                </div>
+              </div>
+              <div class="card stat-card" onclick="navigateTo('attendance')" style="cursor: pointer;" title="View attendance log">
+                <div class="stat-icon sage"><i class="bi bi-person-check-fill"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Present Today</div>
+                  <div class="stat-value">${data.present_today}</div>
+                </div>
+              </div>
+              <div class="card stat-card" onclick="navigateTo('attendance')" style="cursor: pointer;" title="View absent staff">
+                <div class="stat-icon rose"><i class="bi bi-person-x-fill"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Absent Today</div>
+                  <div class="stat-value" style="color: var(--danger);">${data.absent_today}</div>
+                </div>
+              </div>
+              <div class="card stat-card" onclick="navigateTo('attendance')" style="cursor: pointer;" title="View late arrivals">
+                <div class="stat-icon gold"><i class="bi bi-clock-history"></i></div>
+                <div class="stat-info">
+                  <div class="stat-label">Late Arrivals Today</div>
+                  <div class="stat-value">${data.late_today}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts: Monthly Borrowing & Category Breakdown -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+              <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <h3 style="margin: 0; font-size: 1.1rem;"><i class="bi bi-graph-up" style="color: var(--gold);"></i> Monthly Borrowing Volume</h3>
+                  <span style="font-size: 0.775rem; color: var(--text-muted);">Last 6 Months</span>
+                </div>
+                <div style="height: 260px; position: relative;">
+                  <canvas id="monthly-chart"></canvas>
+                </div>
+              </div>
+
+              <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <h3 style="margin: 0; font-size: 1.1rem;"><i class="bi bi-pie-chart-fill" style="color: var(--sage);"></i> Copies by Category</h3>
+                  <span style="font-size: 0.775rem; color: var(--text-muted);">Inventory Allocation</span>
+                </div>
+                <div style="height: 260px; position: relative; display: flex; align-items: center; justify-content: center;">
+                  ${data.by_category && data.by_category.length > 0 ? `
+                    <canvas id="category-chart"></canvas>
+                  ` : `
+                    <div style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                      <i class="bi bi-pie-chart" style="font-size: 2.5rem; color: var(--border); display: block; margin-bottom: 0.5rem;"></i>
+                      <p style="margin: 0; font-size: 0.875rem;">No books cataloged into categories yet</p>
+                      <button class="btn-secondary btn-sm" style="margin-top: 0.75rem;" onclick="openBookModal()"><i class="bi bi-plus-lg"></i> Add First Book</button>
+                    </div>
+                  `}
+                </div>
+              </div>
+            </div>
+
+            <!-- Tables: Recent Activities & Recent Borrowings -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+              <div class="card">
+                <h3><i class="bi bi-activity" style="color: var(--gold);"></i> Recent Library Activities</h3>
+                <div class="table-container" style="box-shadow: none; border: none; margin: 0;">
+                  <table>
+                    <thead>
+                      <tr><th>Actor</th><th>Action</th><th>Details</th><th>Timestamp</th></tr>
+                    </thead>
+                    <tbody>
+                      ${data.activity && data.activity.length ? data.activity.map(a => `
+                        <tr>
+                          <td><span class="badge ${a.actor_role === 'admin' ? 'badge-present' : 'badge-half-day'}">${a.actor_role}</span></td>
+                          <td><b>${escapeHtml(a.action)}</b></td>
+                          <td>${escapeHtml(a.details || '-')}</td>
+                          <td style="color: var(--text-muted); font-size: 0.8rem; white-space: nowrap;">${fmtDateTime(a.created_at).slice(5)}</td>
+                        </tr>
+                      `).join('') : '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No recent activity logged</td></tr>'}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                  <h3 style="margin: 0;"><i class="bi bi-arrow-left-right" style="color: var(--sage);"></i> Recent Transactions</h3>
+                  <a onclick="navigateTo('borrowings')" style="color: var(--gold); font-size: 0.825rem; font-weight: 700; cursor: pointer;">View All</a>
+                </div>
+                <div class="table-container" style="box-shadow: none; border: none; margin: 0;">
+                  <table>
+                    <thead>
+                      <tr><th>Book</th><th>Borrower</th><th>Status</th><th>Due / Return</th><th style="text-align: right;">Action</th></tr>
+                    </thead>
+                    <tbody>
+                      ${data.recent && data.recent.length ? data.recent.map(r => `
+                        <tr>
+                          <td><b>${escapeHtml(r.title)}</b></td>
+                          <td>${escapeHtml(r.borrower_name)}</td>
+                          <td>
+                            ${r.status === 'borrowed'
+                              ? (r.is_overdue
+                                  ? `<span class="badge badge-overdue"><i class="bi bi-alarm-fill"></i> Overdue</span>`
+                                  : `<span class="badge badge-borrowed"><i class="bi bi-book"></i> Active</span>`)
+                              : `<span class="badge badge-returned"><i class="bi bi-check-circle"></i> Returned</span>`
+                            }
+                          </td>
+                          <td style="white-space: nowrap;">
+                            ${r.status === 'borrowed'
+                              ? (r.is_overdue
+                                  ? `<b style="color:var(--danger);">${r.due_date}</b> <small style="color:var(--danger);">(${r.overdue_days}d late)</small>`
+                                  : (r.due_date || '-'))
+                              : (r.due_date || '-')
+                            }
+                          </td>
+                          <td style="text-align: right; white-space: nowrap;">
+                            ${r.status === 'borrowed' ? `
+                              <button class="btn-secondary btn-sm" onclick="openRenewModalById(${r.id})" style="margin-right: 0.25rem;" title="Renew / Extend" ${r.renewal_count >= 5 ? 'disabled' : ''}>
+                                <i class="bi bi-arrow-repeat"></i>
+                              </button>
+                              <button class="btn-primary btn-sm" onclick="returnBook(${r.id})" title="Return Book">
+                                <i class="bi bi-arrow-return-left"></i>
+                              </button>
+                            ` : `<span style="font-size: 0.75rem; color: var(--text-muted);">Done</span>`}
+                          </td>
+                        </tr>
+                      `).join('') : '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No transactions found</td></tr>'}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          `;
+
+          // Monthly Borrowing Chart Render
+          const mCtx = $('monthly-chart')?.getContext('2d');
+          if (mCtx) {
+            const mLabels = (data.monthly_borrowings && data.monthly_borrowings.length)
+              ? data.monthly_borrowings.map(m => m.month)
+              : [];
+            const mValues = (data.monthly_borrowings && data.monthly_borrowings.length)
+              ? data.monthly_borrowings.map(m => Number(m.count))
+              : [];
+
+            state.monthlyChart = new Chart(mCtx, {
+              type: 'bar',
+              data: {
+                labels: mLabels,
+                datasets: [{
+                  label: 'Books Borrowed',
+                  data: mValues,
+                  backgroundColor: '#C2A46D',
+                  borderColor: '#172D40',
+                  borderWidth: 1.5,
+                  borderRadius: 6
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    suggestedMax: 5,
+                    ticks: { precision: 0, stepSize: 1 },
+                    grid: { color: 'rgba(23, 45, 64, 0.08)' }
+                  },
+                  x: { grid: { display: false } }
+                }
+              }
+            });
+          }
+
+          // Copies by Category Render
+          const cCtx = $('category-chart')?.getContext('2d');
+          if (cCtx && data.by_category && data.by_category.length > 0) {
+            state.categoryChart = new Chart(cCtx, {
+              type: 'doughnut',
+              data: {
+                labels: data.by_category.map(c => c.name),
+                datasets: [{
+                  data: data.by_category.map(c => Number(c.n)),
+                  backgroundColor: ['#172D40', '#C2A46D', '#687C70', '#2a5c82', '#dfc89d', '#8fa096']
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } }
+              }
+            });
+          }
+
+          return;
+        }
+
+        // ---------------------------------------------------------------------
+        // 2. LIBRARIAN DASHBOARD
+        // ---------------------------------------------------------------------
+        const todayAttendance = await apiRequest('/attendance/today');
+        const isCheckedIn = !!todayAttendance;
+        const isCheckedOut = isCheckedIn && !!todayAttendance.check_out;
+
+        $('view').innerHTML = `
+          <!-- Librarian Personal Welcome Screen -->
+          <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--navy) 0%, #244663 100%); color: #FFFFFF; border: none; padding: 1.6rem 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <span style="background: rgba(104, 124, 112, 0.35); color: #d4e0d7; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Librarian Desk</span>
+                <h2 style="color: #FFFFFF; font-size: 1.65rem; margin: 0.5rem 0 0.25rem 0;" class="brand-font">Welcome, ${escapeHtml(state.name || 'Librarian')}</h2>
+                <p style="color: var(--gold-light); font-size: 0.9rem; margin: 0; font-weight: 500;">
+                  <i class="bi bi-calendar3"></i> Today is ${getFormattedToday()}
+                </p>
+              </div>
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn-gold" onclick="navigateTo('borrowings')">
+                  <i class="bi bi-send-check"></i> Issue Book
+                </button>
+                <button class="btn" style="background: rgba(255,255,255,0.12); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.25);" onclick="navigateTo('shelfFinder')">
+                  <i class="bi bi-geo-alt-fill"></i> Find Shelf
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Attendance Check-in / Check-out Widget -->
+          <div class="card" style="margin-bottom: 1.5rem; border-left: 4px solid var(--gold); padding: 1.25rem 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="margin: 0; font-size: 1.1rem;"><i class="bi bi-clock-history" style="color: var(--gold);"></i> Today's Shift Attendance</h3>
+                <p style="margin: 0.35rem 0 0 0; color: var(--text-muted); font-size: 0.875rem;">
+                  ${isCheckedIn
+                    ? `Status: <span class="badge badge-${todayAttendance.status.toLowerCase().replace(' ', '-')}">${todayAttendance.status}</span> · Checked In: <b>${fmtTime(todayAttendance.check_in)}</b> ${isCheckedOut ? `· Checked Out: <b>${fmtTime(todayAttendance.check_out)}</b> (${todayAttendance.hours} hrs)` : '· Shift in progress'}`
+                    : 'You have not checked in for today\'s shift yet. Please record your check-in below.'}
+                </p>
+              </div>
+              <div style="display: flex; gap: 0.75rem;">
+                <button class="btn-primary" ${isCheckedIn ? 'disabled' : ''} onclick="librarianCheckIn()">
+                  <i class="bi bi-box-arrow-in-right"></i> Check In
+                </button>
+                <button class="btn-secondary" ${!isCheckedIn || isCheckedOut ? 'disabled' : ''} onclick="librarianCheckOut()">
+                  <i class="bi bi-box-arrow-right"></i> Check Out
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Metrics (Available Books, Inventory, Loans) -->
+          <div class="cards-grid">
+            <div class="card stat-card">
+              <div class="stat-icon sage"><i class="bi bi-check-circle-fill"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Available Books</div>
+                <div class="stat-value" style="color: var(--sage);">${data.available_books}</div>
+              </div>
+            </div>
+            <div class="card stat-card">
+              <div class="stat-icon navy"><i class="bi bi-book"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Total Inventory</div>
+                <div class="stat-value">${data.total_books} <span style="font-size:0.8rem; font-weight:500; color:var(--text-muted); display:block;">(${data.total_titles || 0} unique titles)</span></div>
+              </div>
+            </div>
+            <div class="card stat-card">
+              <div class="stat-icon gold"><i class="bi bi-box-arrow-up-right"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Currently On Loan</div>
+                <div class="stat-value">${data.borrowed_books}</div>
+              </div>
+            </div>
+            <div class="card stat-card">
+              <div class="stat-icon rose"><i class="bi bi-alarm-fill"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Overdue Loans</div>
+                <div class="stat-value" style="color: var(--danger);">${data.overdue_books}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shelf Locator Search Banner -->
+          <div class="card" style="margin-bottom: 1.5rem; background: var(--surface); border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h3 style="margin: 0; font-size: 1.05rem;"><i class="bi bi-geo-alt-fill" style="color: var(--gold);"></i> Find Book & Shelf Location</h3>
+                <p style="margin: 0.2rem 0 0 0; color: var(--text-muted); font-size: 0.85rem;">Instantly locate on which physical shelf a book is sitting</p>
+              </div>
+              <div style="display: flex; gap: 0.5rem; flex: 1; max-width: 440px;">
+                <input id="dash-shelf-query" placeholder="Type book title, author, or shelf code (e.g. A1)..." onkeydown="if(event.key==='Enter')navigateTo('shelfFinder', this.value)">
+                <button class="btn-primary" style="white-space: nowrap;" onclick="navigateTo('shelfFinder', $('dash-shelf-query').value)"><i class="bi bi-search"></i> Find</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Borrowing and Return Records + Recent Activities -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem;">
+            <!-- Borrowing and Return Records -->
+            <div class="card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h3 style="margin: 0;"><i class="bi bi-arrow-left-right" style="color: var(--sage);"></i> Borrowing and Return Records</h3>
+                <a onclick="navigateTo('borrowings')" style="color: var(--gold); font-size: 0.825rem; font-weight: 700; cursor: pointer;">Manage All</a>
+              </div>
+              <div class="table-container" style="box-shadow: none; border: none; margin: 0;">
+                <table>
+                  <thead>
+                    <tr><th>Book Title</th><th>Borrower</th><th>Due Date</th><th>Status</th><th style="text-align: right;">Action</th></tr>
+                  </thead>
+                  <tbody>
+                    ${data.recent && data.recent.length ? data.recent.map(r => `
+                      <tr>
+                        <td><b>${escapeHtml(r.title)}</b></td>
+                        <td>${escapeHtml(r.borrower_name)}</td>
+                        <td>
+                          ${r.status === 'borrowed'
+                            ? (r.is_overdue
+                                ? `<b style="color:var(--danger);">${r.due_date}</b><br><small style="color:var(--danger); font-weight:600;"><i class="bi bi-alarm"></i> ${r.overdue_days}d overdue</small>`
+                                : `<b>${r.due_date || '-'}</b>`)
+                            : (r.due_date || '-')}
+                          ${r.renewal_count > 0 ? `<br><small style="color:var(--gold); font-size:0.75rem; font-weight:600;"><i class="bi bi-arrow-repeat"></i> Extended ${r.renewal_count}/5</small>` : ''}
+                        </td>
+                        <td>
+                          ${r.status === 'borrowed'
+                            ? (r.is_overdue
+                                ? `<span class="badge badge-overdue"><i class="bi bi-alarm-fill"></i> Overdue</span>`
+                                : `<span class="badge badge-borrowed"><i class="bi bi-book"></i> Active</span>`)
+                            : `<span class="badge badge-returned"><i class="bi bi-check-circle"></i> Returned</span>`
+                          }
+                        </td>
+                        <td style="text-align: right; white-space: nowrap;">
+                          ${r.status === 'borrowed'
+                            ? `
+                              <button class="btn-secondary btn-sm" onclick="openRenewModalById(${r.id})" style="margin-right: 0.35rem;" title="Extend Due Date by 7 or 14 days" ${r.renewal_count >= 5 ? 'disabled title="Max renewal limit reached"' : ''}>
+                                <i class="bi bi-arrow-repeat"></i> ${r.renewal_count >= 5 ? 'Max' : 'Renew'}
+                              </button>
+                              <button class="btn-primary btn-sm" onclick="returnBook(${r.id})" title="Return Book">
+                                <i class="bi bi-arrow-return-left"></i> Return
+                              </button>
+                            `
+                            : `<span style="font-size: 0.75rem; color: var(--text-muted);">Completed</span>`}
+                        </td>
+                      </tr>
+                    `).join('') : '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No recent borrowings</td></tr>'}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Recent Library Activities -->
+            <div class="card">
+              <h3><i class="bi bi-activity" style="color: var(--gold);"></i> Recent Activities</h3>
+              <div class="table-container" style="box-shadow: none; border: none; margin: 0;">
+                <table>
+                  <thead>
+                    <tr><th>Role</th><th>Action</th><th>Details</th><th>Timestamp</th></tr>
+                  </thead>
+                  <tbody>
+                    ${data.activity && data.activity.length ? data.activity.map(a => `
+                      <tr>
+                        <td><span class="badge ${a.actor_role === 'admin' ? 'badge-present' : 'badge-half-day'}">${a.actor_role}</span></td>
+                        <td><b>${escapeHtml(a.action)}</b></td>
+                        <td>${escapeHtml(a.details || '-')}</td>
+                        <td style="color: var(--text-muted); font-size: 0.8rem; white-space: nowrap;">${fmtDateTime(a.created_at).slice(5)}</td>
+                      </tr>
+                    `).join('') : '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">No recent activities</td></tr>'}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      },
+
+      // 2. Attendance View
+      async attendance() {
+        if (state.role === 'librarian') {
+          const records = await apiRequest('/attendance/me');
+          $('view').innerHTML = `
+            <div class="view-header">
+              <h2>My Attendance History</h2>
+            </div>
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr><th>Work Date</th><th>Check In</th><th>Check Out</th><th>Hours Worked</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  ${records.length ? records.map(r => `
+                    <tr>
+                      <td><b>${r.work_date}</b></td>
+                      <td>${fmtTime(r.check_in)}</td>
+                      <td>${fmtTime(r.check_out)}</td>
+                      <td>${r.hours !== null ? r.hours + ' hrs' : '-'}</td>
+                      <td><span class="badge badge-${r.status.toLowerCase().replace(' ', '-')}">${r.status}</span></td>
+                    </tr>
+                  `).join('') : '<tr><td colspan="5" style="text-align:center; padding: 2rem;">No attendance records found</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          `;
+          return;
+        }
+
+        // Admin View
+        const [librarians, filterParams] = await Promise.all([
+          apiRequest('/librarians'),
+          Promise.resolve(window.attendanceFilters || {})
+        ]);
+
+        const queryStr = new URLSearchParams(filterParams).toString();
+        const records = await apiRequest(`/attendance?${queryStr}`);
+        const totalHours = records.reduce((sum, r) => sum + Number(r.hours || 0), 0);
+
+        $('view').innerHTML = `
+          <div class="view-header">
+            <h2>Librarian Attendance Management</h2>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="filter-bar">
+              <select id="af-librarian">
+                <option value="">All Staff Members</option>
+                ${librarians.map(l => `<option value="${l.id}" ${filterParams.librarian_id == l.id ? 'selected' : ''}>${escapeHtml(l.name)} (${escapeHtml(l.staff_no)})</option>`).join('')}
+              </select>
+              <input type="date" id="af-from" value="${filterParams.from || ''}" title="From date">
+              <input type="date" id="af-to" value="${filterParams.to || ''}" title="To date">
+              <button class="btn-primary" onclick="applyAttendanceFilter()"><i class="bi bi-funnel"></i> Filter</button>
+              <button class="btn-secondary" onclick="setAttendancePreset(0)">Today</button>
+              <button class="btn-secondary" onclick="setAttendancePreset(6)">Last 7 Days</button>
+              <button class="btn-secondary" onclick="setAttendancePreset(29)">Last 30 Days</button>
+            </div>
+            <div style="font-size: 0.875rem; color: var(--text-muted);">
+              Total cumulative hours in current view: <b style="color: var(--navy);">${totalHours.toFixed(2)} hrs</b>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Staff Member</th>
+                  <th>Date</th>
+                  <th>Check In</th>
+                  <th>Check Out</th>
+                  <th>Hours</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Administrative Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${records.length ? records.map(r => `
+                  <tr>
+                    <td><b>${escapeHtml(r.name)}</b> <span style="font-size: 0.775rem; color: var(--text-muted);">${escapeHtml(r.staff_no)}</span></td>
+                    <td>${r.work_date}</td>
+                    <td>${fmtTime(r.check_in)}</td>
+                    <td>${fmtTime(r.check_out)}</td>
+                    <td>${r.hours !== null ? r.hours + ' hrs' : '-'}</td>
+                    <td><span class="badge badge-${r.status.toLowerCase().replace(' ', '-')}">${r.status}</span></td>
+                    <td style="text-align: right;">
+                      <button class="btn-secondary btn-sm" data-status="${escapeHtml(r.status)}" onclick="openAttendanceCorrection(${r.id}, this.dataset.status)"><i class="bi bi-pencil-square"></i> Correct</button>
+                      <button class="btn-secondary btn-sm" onclick="openAttendanceAudit(${r.id})"><i class="bi bi-shield-check"></i> Audit</button>
+                    </td>
+                  </tr>
+                `).join('') : '<tr><td colspan="7" style="text-align:center; padding: 2rem;">No attendance records matching filter</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        `;
+      },
+
+      // 3. Shelf Locator View
+      async shelfFinder(searchQuery) {
+        const query = typeof searchQuery === 'string' ? searchQuery : ($('sf-query')?.value || '');
+        const activeShelf = window.sfActiveShelf || '';
+
+        const [shelves, books] = await Promise.all([
+          apiRequest('/shelves'),
+          apiRequest(`/books?q=${encodeURIComponent(query)}${activeShelf ? '&shelf=' + encodeURIComponent(activeShelf) : ''}`)
+        ]);
+        state.booksCache = books;
+
+        const totalShelfCount = shelves.length;
+        const totalBooksCount = shelves.reduce((sum, s) => sum + Number(s.total_copies || 0), 0);
+
+        $('view').innerHTML = `
+          <div class="view-header">
+            <div>
+              <h2><i class="bi bi-geo-alt-fill" style="color: var(--gold);"></i> Book & Shelf Locator</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Look up where any book is physically placed on library shelves.</p>
+            </div>
+            <button class="btn-primary" onclick="openBookModal()"><i class="bi bi-plus-lg"></i> Add New Book</button>
+          </div>
+
+          <!-- Physical Shelves Overview -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h3 style="font-size: 1rem; margin: 0;"><i class="bi bi-bookshelf" style="color: var(--gold);"></i> Library Shelf Directory (${totalShelfCount} Sections)</h3>
+              ${activeShelf ? `<button class="btn-secondary btn-sm" onclick="window.sfActiveShelf=''; navigateTo('shelfFinder')"><i class="bi bi-x-circle"></i> View All Shelves</button>` : ''}
+            </div>
+            <div style="display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; flex-wrap: wrap;">
+              <div class="card" onclick="window.sfActiveShelf=''; navigateTo('shelfFinder')" style="cursor: pointer; padding: 0.75rem 1rem; min-width: 120px; border-color: ${!activeShelf ? 'var(--gold)' : 'var(--border)'}; background: ${!activeShelf ? 'var(--accent-subtle)' : '#fff'}; margin: 0;">
+                <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;">All Shelves</div>
+                <div style="font-size: 1.25rem; font-weight: 700; color: var(--navy);">${totalBooksCount} <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">copies</span></div>
+              </div>
+              ${shelves.map(s => `
+                <div class="card" data-shelf="${escapeHtml(s.shelf)}" onclick="window.sfActiveShelf=this.dataset.shelf; navigateTo('shelfFinder')" style="cursor: pointer; padding: 0.75rem 1rem; min-width: 140px; border-color: ${activeShelf === s.shelf ? 'var(--gold)' : 'var(--border)'}; background: ${activeShelf === s.shelf ? 'var(--accent-subtle)' : '#fff'}; margin: 0;">
+                  <div style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; font-weight: 700; color: var(--navy);">
+                    <i class="bi bi-geo-alt-fill" style="color: var(--gold);"></i> Shelf ${escapeHtml(s.shelf)}
+                  </div>
+                  <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                    <b>${s.total_titles}</b> titles · <b style="color: var(--sage);">${s.available_copies}</b> avail
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Search & Filter Toolbar -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="filter-bar" style="margin-bottom: 0;">
+              <input id="sf-query" placeholder="Type title, author, ISBN or shelf code..." value="${escapeHtml(query)}" style="max-width: 380px;" onkeydown="if(event.key==='Enter')navigateTo('shelfFinder')">
+              <button class="btn-primary" onclick="navigateTo('shelfFinder')"><i class="bi bi-search"></i> Search Location</button>
+              ${query ? `<button class="btn-secondary" onclick="$('sf-query').value=''; navigateTo('shelfFinder')">Clear</button>` : ''}
+              ${activeShelf ? `<span class="badge badge-half-day" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;"><i class="bi bi-funnel"></i> Filtered by Shelf: <b>${escapeHtml(activeShelf)}</b></span>` : ''}
+            </div>
+          </div>
+
+          <!-- Books Location Table -->
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="min-width: 130px;">Shelf Location</th>
+                  <th>Book Title & Details</th>
+                  <th>Category</th>
+                  <th>ISBN</th>
+                  <th>Availability</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${books.length ? books.map(b => `
+                  <tr>
+                    <td>
+                      <span class="badge" style="background: var(--primary-subtle); color: var(--navy); font-size: 0.85rem; padding: 0.4rem 0.75rem; font-weight: 700; border: 1px solid #d5dfe6;">
+                        <i class="bi bi-geo-alt-fill" style="color: var(--gold);"></i> Shelf ${escapeHtml(b.shelf || 'Unassigned')}
+                      </span>
+                    </td>
+                    <td>
+                      <b style="font-size: 0.95rem; color: var(--navy);">${escapeHtml(b.title)}</b>
+                      <div style="font-size: 0.825rem; color: var(--text-muted);">
+                        By ${escapeHtml(b.author)}${b.pub_year ? ' · ' + b.pub_year : ''}
+                      </div>
+                    </td>
+                    <td>${b.category ? `<span class="badge badge-half-day">${escapeHtml(b.category)}</span>` : '<span style="color:var(--text-muted);">-</span>'}</td>
+                    <td><code>${escapeHtml(b.isbn)}</code></td>
+                    <td>
+                      <span class="badge ${b.available_copies > 0 ? 'badge-present' : 'badge-absent'}">
+                        ${b.available_copies > 0 ? `${b.available_copies} Available on shelf` : 'Out of stock'}
+                      </span>
+                      <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Total copies: ${b.total_copies}</div>
+                    </td>
+                    <td style="text-align: right;">
+                      <button class="btn-secondary btn-sm" onclick="openBookModal(${b.id})" title="Change shelf or edit book">
+                        <i class="bi bi-pencil"></i> Move Shelf
+                      </button>
+                      <button class="btn-primary btn-sm" ${b.available_copies < 1 ? 'disabled' : ''} data-title="${escapeHtml(b.title)}" onclick="quickIssueBook(${b.id}, this.dataset.title)" title="Issue book">
+                        <i class="bi bi-send-check"></i> Issue
+                      </button>
+                    </td>
+                  </tr>
+                `).join('') : `
+                  <tr>
+                    <td colspan="6" style="text-align: center; padding: 3rem;">
+                      <i class="bi bi-geo-alt" style="font-size: 2.5rem; color: var(--text-muted);"></i>
+                      <p style="margin: 0.5rem 0 0 0; color: var(--text-muted); font-size: 0.95rem;">No books found for this shelf or search term.</p>
+                      <button class="btn-primary btn-sm" style="margin-top: 1rem;" onclick="openBookModal()">+ Add Book to Shelf</button>
+                    </td>
+                  </tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+        `;
+      },
+
+      // 4. Books Catalog View
+      async books(searchQuery) {
+        if (typeof searchQuery === 'string') state.bookSearch = searchQuery;
+        const query = state.bookSearch !== undefined ? state.bookSearch : ($('book-search')?.value || '');
+        if (typeof searchQuery === 'string' && $('global-search')) {
+          $('global-search').value = '';
+        }
+        const filter = state.bookFilter || '';
+
+        const [booksList, categories] = await Promise.all([
+          apiRequest(`/books?q=${encodeURIComponent(query)}&filter=${filter}`),
+          apiRequest('/categories')
+        ]);
+
+        state.booksCache = booksList;
+        state.categories = categories;
+
+        $('view').innerHTML = `
+          <div class="view-header">
+            <div>
+              <h2>Book Inventory Catalog</h2>
+              <p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.875rem;">
+                Total Inventory: <b>${booksList.reduce((acc, b) => acc + (Number(b.total_copies) || 0), 0)}</b> physical copies across <b>${booksList.length}</b> titles (<b style="color:var(--sage);">${booksList.reduce((acc, b) => acc + (Number(b.available_copies) || 0), 0)}</b> currently available on shelf)
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-secondary" onclick="addCategoryPrompt()"><i class="bi bi-tag-fill" style="color: var(--gold);"></i> + Category</button>
+              <button class="btn-primary" onclick="openBookModal()"><i class="bi bi-plus-lg"></i> Add New Book</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="filter-bar" style="margin-bottom: 0;">
+              <input id="book-search" placeholder="Search by title, author, or ISBN..." value="${escapeHtml(query)}" style="max-width: 300px;" onkeydown="if(event.key==='Enter'){ state.bookSearch = this.value; navigateTo('books'); }">
+              <select id="book-filter" onchange="state.bookFilter = this.value; navigateTo('books')">
+                <option value="">All Stock Levels</option>
+                <option value="unavailable" ${filter === 'unavailable' ? 'selected' : ''}>Out of Stock</option>
+                <option value="low" ${filter === 'low' ? 'selected' : ''}>Low Stock</option>
+              </select>
+              <button class="btn-secondary" onclick="state.bookSearch = $('book-search').value; navigateTo('books')"><i class="bi bi-search"></i> Search</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ISBN</th>
+                  <th>Title & Author</th>
+                  <th>Category</th>
+                  <th>Shelf Location</th>
+                  <th>Availability</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${booksList.length ? booksList.map(b => `
+                  <tr>
+                    <td><code>${escapeHtml(b.isbn)}</code></td>
+                    <td>
+                      <b>${escapeHtml(b.title)}</b>
+                      <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(b.author)}${b.pub_year ? ' (' + b.pub_year + ')' : ''}</div>
+                    </td>
+                    <td>${b.category ? `<span class="badge badge-half-day">${escapeHtml(b.category)}</span>` : '<span style="color:var(--text-muted);">None</span>'}</td>
+                    <td>
+                      <span class="badge" style="background: var(--primary-subtle); color: var(--navy); font-weight: 700; cursor: pointer; border: 1px solid #d5dfe6;" data-shelf="${escapeHtml(b.shelf || '')}" onclick="navigateTo('shelfFinder', this.dataset.shelf)" title="Click to view all books on Shelf ${escapeHtml(b.shelf || '')}">
+                        <i class="bi bi-geo-alt-fill" style="color: var(--gold);"></i> Shelf ${escapeHtml(b.shelf || 'Unassigned')}
+                      </span>
+                    </td>
+                    <td>
+                      <b style="color: ${b.available_copies === 0 ? 'var(--danger)' : 'var(--navy)'};">${b.available_copies}</b> / ${b.total_copies}
+                    </td>
+                    <td style="text-align: right;">
+                      <button class="btn-secondary btn-sm" onclick="openBookModal(${b.id})"><i class="bi bi-pencil"></i> Edit</button>
+                      ${state.role === 'admin' ? `<button class="btn-danger btn-sm" onclick="deleteBook(${b.id})"><i class="bi bi-trash"></i></button>` : ''}
+                    </td>
+                  </tr>
+                `).join('') : '<tr><td colspan="6" style="text-align:center; padding: 2rem;">No books found matching criteria</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        `;
+      },
+
+      // 5. Borrowings View
+      async borrowings(preselectedBookId) {
+        const filterStatus = state.borrowingFilter || '';
+        const searchQuery = state.borrowingSearch || '';
+
+        const queryParams = new URLSearchParams();
+        if (filterStatus) queryParams.set('status', filterStatus);
+        if (searchQuery) queryParams.set('search', searchQuery);
+
+        const [borrowings, books] = await Promise.all([
+          apiRequest(`/borrowings?${queryParams.toString()}`),
+          apiRequest('/books')
+        ]);
+        state.currentBorrowings = borrowings;
+
+        const availableBooks = books.filter(b => b.available_copies > 0);
+
+        $('view').innerHTML = `
+          <div class="view-header">
+            <div>
+              <h2>Borrowings & Circulation</h2>
+              <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Issue books, manage active loans, extend due dates, and process returns</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-secondary" onclick="navigateTo('shelfFinder')"><i class="bi bi-geo-alt-fill" style="color:var(--gold);"></i> Shelf Locator</button>
+              <button class="btn-secondary" onclick="navigateTo('books')"><i class="bi bi-book"></i> Book Catalog</button>
+            </div>
+          </div>
+
+          <!-- Issue Book Form -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h3 style="margin: 0; font-size: 1.05rem;"><i class="bi bi-send-check" style="color: var(--gold);"></i> Issue a Book</h3>
+              <span style="font-size: 0.8rem; color: var(--text-muted);"><b style="color:var(--sage);">${availableBooks.length}</b> titles currently available</span>
+            </div>
+            <div class="filter-bar" style="margin-bottom: 0;">
+              <select id="issue-book" style="flex: 1.5; min-width: 220px;">
+                ${availableBooks.length
+                  ? `<option value="">-- Select Book to Issue --</option>` + availableBooks.map(b => `<option value="${b.id}">${escapeHtml(b.title)} (${b.available_copies} avail${b.shelf ? ' · Shelf ' + escapeHtml(b.shelf) : ''})</option>`).join('')
+                  : '<option value="" disabled selected>No books currently available in stock</option>'
+                }
+              </select>
+              <input id="issue-name" placeholder="Borrower full name *" style="flex: 1; min-width: 170px;">
+              <input id="issue-ref" placeholder="Student / Staff ID" style="flex: 0.8; min-width: 130px;">
+              <input id="issue-days" type="number" min="1" max="90" placeholder="Days (default 14)" style="width: 125px;">
+              <button class="btn-primary" onclick="issueBook()" ${availableBooks.length === 0 ? 'disabled' : ''}><i class="bi bi-send-check"></i> Issue Book</button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Toolbar -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="filter-bar" style="margin-bottom: 0; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <label style="margin: 0; font-weight: 600; font-size: 0.875rem;">Status:</label>
+                <select id="borrowing-filter" onchange="setBorrowingFilter(this.value)" style="min-width: 150px;">
+                  <option value="" ${filterStatus === '' ? 'selected' : ''}>All Records</option>
+                  <option value="borrowed" ${filterStatus === 'borrowed' ? 'selected' : ''}>Active Loans</option>
+                  <option value="overdue" ${filterStatus === 'overdue' ? 'selected' : ''}>Overdue Loans</option>
+                  <option value="returned" ${filterStatus === 'returned' ? 'selected' : ''}>Returned Loans</option>
+                </select>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; max-width: 380px;">
+                <input id="borrowing-search" placeholder="Search book, borrower, or ID..." value="${escapeHtml(searchQuery)}" onkeydown="if(event.key==='Enter')setBorrowingSearch(this.value)">
+                <button class="btn-secondary" onclick="setBorrowingSearch($('borrowing-search').value)"><i class="bi bi-search"></i></button>
+                ${searchQuery ? `<button class="btn-secondary" onclick="setBorrowingSearch('')" title="Clear search"><i class="bi bi-x-lg"></i></button>` : ''}
+              </div>
+
+              <div style="margin-left: auto; font-size: 0.85rem; color: var(--text-muted);">
+                Showing <b>${borrowings.length}</b> record${borrowings.length === 1 ? '' : 's'}
+              </div>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Book Title</th>
+                  <th>Borrower</th>
+                  <th>Borrowed</th>
+                  <th>Due Date</th>
+                  <th>Status</th>
+                  <th>Fine</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${borrowings.length ? borrowings.map(b => {
+                  const isOverdue = b.status === 'borrowed' && b.accrued_fine > 0;
+                  return `
+                  <tr>
+                    <td>
+                      <b>${escapeHtml(b.title)}</b>
+                      ${b.isbn ? `<br><small style="color:var(--text-muted); font-size:0.75rem;">ISBN: ${escapeHtml(b.isbn)}</small>` : ''}
+                    </td>
+                    <td>
+                      <b>${escapeHtml(b.borrower_name)}</b>
+                      ${b.borrower_ref ? `<br><small style="font-size:0.775rem; color:var(--text-muted);"><i class="bi bi-person-badge"></i> ${escapeHtml(b.borrower_ref)}</small>` : ''}
+                    </td>
+                    <td style="white-space: nowrap;">${fmtDate(b.borrowed_at)}</td>
+                    <td style="white-space: nowrap;">
+                      ${b.status === 'borrowed'
+                        ? (isOverdue
+                            ? `<b style="color:var(--danger);">${b.due_date}</b><br><small style="color:var(--danger); font-weight:600;"><i class="bi bi-alarm"></i> ${b.overdue_days}d overdue</small>`
+                            : `<b>${b.due_date || '-'}</b>`)
+                        : (b.due_date || '-')
+                      }
+                      ${b.renewal_count > 0 ? `<br><small style="color:var(--gold); font-size:0.75rem; font-weight:600;"><i class="bi bi-arrow-repeat"></i> Extended ${b.renewal_count}/5</small>` : ''}
+                    </td>
+                    <td>
+                      ${b.status === 'borrowed'
+                        ? (isOverdue
+                            ? `<span class="badge badge-overdue"><i class="bi bi-alarm-fill"></i> Overdue</span>`
+                            : `<span class="badge badge-borrowed"><i class="bi bi-book"></i> Active</span>`)
+                        : `<span class="badge badge-returned"><i class="bi bi-check-circle"></i> Returned</span>`
+                      }
+                    </td>
+                    <td style="white-space: nowrap;">
+                      ${b.status === 'returned'
+                        ? (b.fine > 0 ? `<b style="color:var(--navy);">$${Number(b.fine).toFixed(2)}</b>` : '<span style="color:var(--text-muted);">$0.00</span>')
+                        : (b.accrued_fine > 0 ? `<b style="color:var(--danger);">$${Number(b.accrued_fine).toFixed(2)}</b>` : '<span style="color:var(--text-muted);">$0.00</span>')
+                      }
+                    </td>
+                    <td style="text-align: right; white-space: nowrap;">
+                      ${b.status === 'borrowed' ? `
+                        <button class="btn-secondary btn-sm" onclick="openRenewModalById(${b.id})" style="margin-right: 0.35rem;" ${b.renewal_count >= 5 ? 'disabled title="Max renewal limit reached"' : 'title="Extend Due Date by 7 or 14 days"'}>
+                          <i class="bi bi-arrow-repeat"></i> ${b.renewal_count >= 5 ? 'Max' : 'Renew'}
+                        </button>
+                        <button class="btn-primary btn-sm" onclick="returnBook(${b.id})" title="Return book to library">
+                          <i class="bi bi-arrow-return-left"></i> Return
+                        </button>
+                      ` : `
+                        <span style="color:var(--text-muted); font-size: 0.8rem;">Returned ${b.returned_at ? fmtDate(b.returned_at) : ''}</span>
+                      `}
+                    </td>
+                  </tr>
+                `}).join('') : `
+                  <tr>
+                    <td colspan="7" style="text-align:center; padding: 2.5rem;">
+                      <i class="bi bi-journal-x" style="font-size: 2rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem;"></i>
+                      <p style="margin: 0; color: var(--text-muted);">No borrowing records found${filterStatus || searchQuery ? ' matching the selected filters' : ''}</p>
+                      ${filterStatus || searchQuery ? `<button class="btn-secondary btn-sm" style="margin-top:0.75rem;" onclick="setBorrowingFilter(''); setBorrowingSearch('');"><i class="bi bi-x-circle"></i> Reset Filters</button>` : ''}
+                    </td>
+                  </tr>
+                `}
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        if (preselectedBookId && $('issue-book')) {
+          $('issue-book').value = preselectedBookId;
+          $('issue-name')?.focus();
+        }
+      },
+
+      // 6. Librarians Management View (Admin Only)
+      async librarians() {
+        const librarians = await apiRequest('/librarians');
+
+        $('view').innerHTML = `
+          <div class="view-header">
+            <h2>Librarian Staff Management</h2>
+          </div>
+
+          <!-- Create Librarian Card -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <h3>Register New Librarian</h3>
+            <div class="filter-bar" style="margin-bottom: 0;">
+              <input id="nl-staffno" placeholder="Staff No *" style="max-width: 140px;">
+              <input id="nl-name" placeholder="Full Name *" style="max-width: 180px;">
+              <input id="nl-email" type="email" placeholder="Email Address *" style="max-width: 200px;">
+              <input id="nl-phone" placeholder="Phone (optional)" style="max-width: 150px;">
+              <input id="nl-password" type="password" placeholder="Password (8+ chars) *" style="max-width: 180px;">
+              <button class="btn-primary" onclick="createLibrarian()"><i class="bi bi-person-plus"></i> Create</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Staff No</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${librarians.length ? librarians.map(l => `
+                  <tr>
+                    <td><code>${escapeHtml(l.staff_no)}</code></td>
+                    <td><b>${escapeHtml(l.name)}</b></td>
+                    <td>${escapeHtml(l.email)}</td>
+                    <td>${escapeHtml(l.phone || '-')}</td>
+                    <td><span class="badge ${l.active ? 'badge-active' : 'badge-inactive'}">${l.active ? 'Active' : 'Deactivated'}</span></td>
+                    <td style="text-align: right;">
+                      <button class="btn-secondary btn-sm" onclick="toggleLibrarianStatus(${l.id}, ${!l.active})">${l.active ? 'Deactivate' : 'Activate'}</button>
+                      <button class="btn-secondary btn-sm" onclick="openResetPasswordModal(${l.id})"><i class="bi bi-key"></i> Reset Pwd</button>
+                      <button class="btn-danger btn-sm" onclick="deleteLibrarian(${l.id})"><i class="bi bi-trash"></i></button>
+                    </td>
+                  </tr>
+                `).join('') : '<tr><td colspan="6" style="text-align:center; padding: 2rem;">No librarians registered</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        `;
+      },
+
+      // 6. System Settings View (Admin Only)
+      async settings() {
+        const cfg = await apiRequest('/settings');
+
+        $('view').innerHTML = `
+          <div class="view-header">
+            <div>
+              <h2>System Rules & Configuration</h2>
+              <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0.25rem 0 0 0;">
+                Configure staff shift schedules, borrowing loan durations, overdue fine policies, and inventory thresholds.
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button class="btn-secondary" onclick="views.settings()"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+              <button class="btn-gold" onclick="saveSystemSettings()"><i class="bi bi-check2-circle"></i> Save Settings</button>
+            </div>
+          </div>
+
+          <!-- Quick Stats / Active Rules Banner -->
+          <div class="cards-grid" style="margin-bottom: 1.5rem;">
+            <div class="card stat-card">
+              <div class="stat-icon navy"><i class="bi bi-clock-history"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Shift Start</div>
+                <div class="stat-value" style="font-size: 1.35rem;">${escapeHtml(cfg.work_start || '08:30')}</div>
+                <small style="color: var(--text-muted); font-size: 0.75rem;">+${escapeHtml(cfg.grace_minutes || '10')}m grace</small>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon gold"><i class="bi bi-calendar-check"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Standard Loan</div>
+                <div class="stat-value" style="font-size: 1.35rem;">${escapeHtml(cfg.loan_days || '14')} <span style="font-size: 0.85rem; font-weight: 500;">Days</span></div>
+                <small style="color: var(--text-muted); font-size: 0.75rem;">Per borrowing</small>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon rose"><i class="bi bi-cash-coin"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Daily Fine Rate</div>
+                <div class="stat-value" style="font-size: 1.35rem;">$${parseFloat(cfg.fine_per_day || 0.50).toFixed(2)}</div>
+                <small style="color: var(--text-muted); font-size: 0.75rem;">Per overdue day</small>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon sage"><i class="bi bi-exclamation-triangle"></i></div>
+              <div class="stat-info">
+                <div class="stat-label">Low Stock Alert</div>
+                <div class="stat-value" style="font-size: 1.35rem;">≤ ${escapeHtml(cfg.low_stock || '2')} <span style="font-size: 0.85rem; font-weight: 500;">Copies</span></div>
+                <small style="color: var(--text-muted); font-size: 0.75rem;">Triggers warning badge</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configuration Form Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            
+            <!-- Card 1: Shift & Attendance Settings -->
+            <div class="card" style="box-shadow: var(--shadow-sm);">
+              <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--primary-subtle); color: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                  <i class="bi bi-person-badge"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; font-size: 1.05rem;">Staff Shift & Attendance Rules</h3>
+                  <p style="margin: 0; color: var(--text-muted); font-size: 0.8rem;">Controls automated attendance grading during daily check-in</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cfg-work-start">
+                  <i class="bi bi-alarm" style="color: var(--navy);"></i> Daily Shift Start Time (24-Hour) *
+                </label>
+                <input id="cfg-work-start" type="time" value="${escapeHtml(cfg.work_start || '08:30')}">
+                <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                  Expected arrival time for librarians on duty (e.g., 08:30).
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="cfg-grace-min">
+                  <i class="bi bi-hourglass-split" style="color: var(--gold);"></i> Late Grace Period (Minutes) *
+                </label>
+                <input id="cfg-grace-min" type="number" min="0" max="120" value="${escapeHtml(cfg.grace_minutes || '10')}">
+                <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                  Tolerance buffer after shift start. Checking in after this will mark status as <b>Late</b>.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="cfg-half-day">
+                  <i class="bi bi-pie-chart" style="color: var(--sage);"></i> Half-Day Minimum Shift (Hours) *
+                </label>
+                <input id="cfg-half-day" type="number" min="1" max="12" step="0.5" value="${escapeHtml(cfg.half_day_hours || '4')}">
+                <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                  Shifts with total checked hours less than this value will be classified as <b>Half-day</b> upon checkout.
+                </small>
+              </div>
+            </div>
+
+            <!-- Card 2: Circulation & Inventory Settings -->
+            <div class="card" style="box-shadow: var(--shadow-sm);">
+              <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem;">
+                <div style="width: 36px; height: 36px; border-radius: 8px; background: var(--gold-subtle); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                  <i class="bi bi-book-half"></i>
+                </div>
+                <div>
+                  <h3 style="margin: 0; font-size: 1.05rem;">Circulation & Inventory Rules</h3>
+                  <p style="margin: 0; color: var(--text-muted); font-size: 0.8rem;">Controls book borrowing deadlines, overdue fines, and re-order alerts</p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="cfg-loan-days">
+                  <i class="bi bi-calendar-event" style="color: var(--navy);"></i> Default Loan Duration (Days) *
+                </label>
+                <input id="cfg-loan-days" type="number" min="1" max="365" value="${escapeHtml(cfg.loan_days || '14')}">
+                <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                  Standard number of days allocated to borrowers before return is due.
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="cfg-fine-rate">
+                  <i class="bi bi-cash" style="color: var(--danger);"></i> Daily Overdue Fine Rate ($) *
+                </label>
+                <input id="cfg-fine-rate" type="number" min="0" step="0.05" value="${parseFloat(cfg.fine_per_day || 0.50).toFixed(2)}">
+                <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                  Amount automatically accrued per day after the due date passes.
+                </small>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="cfg-low-stock">
+                  <i class="bi bi-shield-exclamation" style="color: var(--gold);"></i> Low Inventory Warning Threshold (Copies) *
+                </label>
+                <input id="cfg-low-stock" type="number" min="1" max="100" value="${escapeHtml(cfg.low_stock || '2')}">
+                <small style="color: var(--text-muted); font-size: 0.75rem; display: block; margin-top: 0.25rem;">
+                  Books with remaining copies ≤ this number trigger a low stock alert badge in the catalog.
+                </small>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Bar -->
+          <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--bg); border: 1px dashed var(--border);">
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+              <i class="bi bi-shield-check" style="color: var(--sage); font-size: 1rem;"></i>
+              Rules take effect immediately across all subsequent check-ins, book loans, and fine calculations.
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+              <button type="button" class="btn-secondary" onclick="restoreDefaultSettings()">
+                <i class="bi bi-arrow-counterclockwise"></i> Restore Defaults
+              </button>
+              <button type="button" class="btn-primary" onclick="saveSystemSettings()">
+                <i class="bi bi-save2"></i> Save Changes
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    };
+
+    // Settings Action Handlers
+    async function saveSystemSettings() {
+      const work_start = $('cfg-work-start').value.trim();
+      const grace_minutes = parseInt($('cfg-grace-min').value, 10);
+      const half_day_hours = parseFloat($('cfg-half-day').value);
+      const loan_days = parseInt($('cfg-loan-days').value, 10);
+      const fine_per_day = parseFloat($('cfg-fine-rate').value);
+      const low_stock = parseInt($('cfg-low-stock').value, 10);
+
+      if (!work_start || !/^([01]\d|2[0-3]):([0-5]\d)$/.test(work_start)) {
+        showToast('Please enter a valid shift start time in HH:MM format', 'error');
+        return;
+      }
+      if (isNaN(grace_minutes) || grace_minutes < 0 || grace_minutes > 120) {
+        showToast('Grace period must be an integer between 0 and 120 minutes', 'error');
+        return;
+      }
+      if (isNaN(half_day_hours) || half_day_hours <= 0 || half_day_hours > 12) {
+        showToast('Half-day minimum hours must be between 1 and 12', 'error');
+        return;
+      }
+      if (isNaN(loan_days) || loan_days < 1 || loan_days > 365) {
+        showToast('Standard loan duration must be between 1 and 365 days', 'error');
+        return;
+      }
+      if (isNaN(fine_per_day) || fine_per_day < 0) {
+        showToast('Daily fine rate must be a non-negative number', 'error');
+        return;
+      }
+      if (isNaN(low_stock) || low_stock < 1) {
+        showToast('Low stock alert threshold must be at least 1 copy', 'error');
+        return;
+      }
+
+      try {
+        const res = await apiRequest('/settings', 'PUT', {
+          work_start,
+          grace_minutes,
+          half_day_hours,
+          loan_days,
+          fine_per_day,
+          low_stock
+        });
+        showToast(res.message || 'System settings saved successfully!', 'success');
+        if (views.settings) {
+          await views.settings();
+        }
+      } catch (err) {
+        showToast(err.message || 'Failed to update system settings', 'error');
+      }
+    }
+
+    function restoreDefaultSettings() {
+      confirmDialog(
+        'Restore Default Settings?',
+        'This will populate standard library defaults (08:30 shift start, 10 min grace, 4-hour half-day, 14-day loans, $0.50/day fine, 2 copies low-stock). Click "Save Changes" afterwards to commit.',
+        () => {
+          $('cfg-work-start').value = '08:30';
+          $('cfg-grace-min').value = '10';
+          $('cfg-half-day').value = '4';
+          $('cfg-loan-days').value = '14';
+          $('cfg-fine-rate').value = '0.50';
+          $('cfg-low-stock').value = '2';
+          showToast('Default values loaded into form. Click "Save Changes" to apply.', 'info');
+        }
+      );
+    }
+
+    // =========================================================================
+    // MODAL & ACTION HANDLERS
+    // =========================================================================
+
+    // Book Modal
+    async function openBookModal(bookId = null) {
+      if (!state.categories || state.categories.length === 0) {
+        try {
+          state.categories = await apiRequest('/categories');
+        } catch (_) {
+          state.categories = [];
+        }
+      }
+      const isEdit = bookId !== null;
+      $('book-modal-title').textContent = isEdit ? 'Edit Book' : 'Add New Book';
+      $('bm-id').value = bookId || '';
+
+      // Populate categories dropdown
+      $('bm-category').innerHTML = '<option value="">None / Uncategorized</option>' + 
+        state.categories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+
+      if (isEdit) {
+        let book = (state.booksCache || []).find(b => b.id === bookId);
+        if (!book) {
+          try {
+            const books = await apiRequest('/books');
+            state.booksCache = books;
+            book = books.find(b => b.id === bookId);
+          } catch (_) {}
+        }
+        if (book) {
+          $('bm-isbn').value = book.isbn || '';
+          $('bm-title').value = book.title || '';
+          $('bm-author').value = book.author || '';
+          $('bm-category').value = book.category_id || '';
+          $('bm-copies').value = book.total_copies || 1;
+          $('bm-shelf').value = book.shelf || '';
+          $('bm-year').value = book.pub_year || '';
+          $('bm-publisher').value = book.publisher || '';
+          $('bm-desc').value = book.description || '';
+        }
+      } else {
+        $('bm-isbn').value = '';
+        $('bm-title').value = '';
+        $('bm-author').value = '';
+        $('bm-category').value = '';
+        $('bm-copies').value = '1';
+        $('bm-shelf').value = '';
+        $('bm-year').value = '';
+        $('bm-publisher').value = '';
+        $('bm-desc').value = '';
+      }
+
+      openModal('book-modal');
+    }
+
+    async function submitBookModal() {
+      const bookId = $('bm-id').value;
+      const data = {
+        isbn: $('bm-isbn').value.trim(),
+        title: $('bm-title').value.trim(),
+        author: $('bm-author').value.trim(),
+        category_id: $('bm-category').value || null,
+        total_copies: parseInt($('bm-copies').value, 10),
+        shelf: $('bm-shelf').value.trim() || null,
+        pub_year: $('bm-year').value ? parseInt($('bm-year').value, 10) : null,
+        publisher: $('bm-publisher').value.trim() || null,
+        description: $('bm-desc').value.trim() || null
+      };
+
+      if (!data.isbn || !data.title || !data.author || isNaN(data.total_copies) || data.total_copies < 1) {
+        showToast('Please fill all required fields correctly (ISBN, Title, Author, Copies)', 'error');
+        return;
+      }
+
+      try {
+        if (bookId) {
+          await apiRequest(`/books/${bookId}`, 'PUT', data);
+          showToast('Book updated successfully', 'success');
+        } else {
+          await apiRequest('/books', 'POST', data);
+          showToast('Book added to inventory', 'success');
+        }
+        closeModal('book-modal');
+        navigateTo('books');
+      } catch (err) {}
+    }
+
+    function deleteBook(bookId) {
+      confirmDialog('Delete Book', 'Are you sure you want to permanently delete this book record? This action cannot be undone.', async () => {
+        try {
+          await apiRequest(`/books/${bookId}`, 'DELETE');
+          showToast('Book removed successfully', 'success');
+          navigateTo('books');
+        } catch (err) {}
+      });
+    }
+
+    function quickIssueBook(bookId, bookTitle) {
+      navigateTo('borrowings', bookId);
+      showToast(`Selected "${bookTitle}" for issuing`, 'info');
+    }
+
+    async function addCategoryPrompt() {
+      const name = prompt('Enter new book category name:');
+      if (!name || !name.trim()) return;
+      try {
+        await apiRequest('/categories', 'POST', { name: name.trim() });
+        showToast(`Category "${name.trim()}" added`, 'success');
+        navigateTo('books');
+      } catch (err) {}
+    }
+
+    // Attendance Actions
+    async function librarianCheckIn() {
+      try {
+        const res = await apiRequest('/attendance/check-in', 'POST');
+        showToast(`Checked in successfully (Status: ${res.status})`, 'success');
+        navigateTo('dashboard');
+      } catch (err) {}
+    }
+
+    async function librarianCheckOut() {
+      try {
+        await apiRequest('/attendance/check-out', 'POST');
+        showToast('Checked out successfully. Shift completed!', 'success');
+        navigateTo('dashboard');
+      } catch (err) {}
+    }
+
+    function applyAttendanceFilter() {
+      window.attendanceFilters = {
+        librarian_id: $('af-librarian').value,
+        from: $('af-from').value,
+        to: $('af-to').value
+      };
+      navigateTo('attendance');
+    }
+
+    function setAttendancePreset(daysBack) {
+      const now = new Date();
+      const past = new Date();
+      past.setDate(now.getDate() - daysBack);
+      const toIso = d => fmtDate(d.toISOString());
+
+      window.attendanceFilters = {
+        from: toIso(past),
+        to: toIso(now),
+        librarian_id: $('af-librarian')?.value || ''
+      };
+      navigateTo('attendance');
+    }
+
+    function openAttendanceCorrection(attendanceId, currentStatus) {
+      $('am-id').value = attendanceId;
+      $('am-status').value = currentStatus;
+      $('am-reason').value = '';
+      openModal('attendance-modal');
+    }
+
+    async function submitAttendanceModal() {
+      const id = $('am-id').value;
+      const status = $('am-status').value;
+      const reason = $('am-reason').value.trim();
+
+      if (!reason) {
+        showToast('A reason is mandatory for administrative corrections', 'error');
+        return;
+      }
+
+      try {
+        await apiRequest(`/attendance/${id}`, 'PUT', { status, reason });
+        showToast('Attendance corrected and logged in audit trail', 'success');
+        closeModal('attendance-modal');
+        navigateTo('attendance');
+      } catch (err) {}
+    }
+
+    async function openAttendanceAudit(attendanceId) {
+      try {
+        const audits = await apiRequest(`/attendance/${attendanceId}/audit`);
+        const bodyEl = $('audit-modal-body');
+
+        if (!audits.length) {
+          bodyEl.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No corrections have been made to this record.</p>';
+        } else {
+          bodyEl.innerHTML = audits.map(a => {
+            const oldVal = a.old_values || {};
+            const newVal = a.new_values || {};
+            return `
+              <div style="border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.825rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                  <span><i class="bi bi-clock"></i> ${fmtDateTime(a.created_at)}</span>
+                  <span><i class="bi bi-person-check"></i> ${escapeHtml(a.admin_name || 'Admin')}</span>
+                </div>
+                <div><b>Reason:</b> ${escapeHtml(a.reason)}</div>
+                <div style="font-size: 0.85rem; margin-top: 0.5rem; background: var(--bg); padding: 0.5rem; border-radius: 4px;">
+                  <div><b>Old:</b> Status: ${oldVal.status || '-'} | Hours: ${oldVal.hours ?? '-'}</div>
+                  <div><b>New:</b> Status: ${newVal.status || '-'} | Hours: ${newVal.hours ?? '-'}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+        openModal('audit-modal');
+      } catch (err) {}
+    }
+
+    // Borrowings Actions & Filter Handlers
+    function setBorrowingFilter(status) {
+      state.borrowingFilter = status;
+      navigateTo('borrowings');
+    }
+
+    function setBorrowingSearch(query) {
+      state.borrowingSearch = (query || '').trim();
+      navigateTo('borrowings');
+    }
+
+    async function issueBook() {
+      const book_id = $('issue-book').value;
+      const borrower_name = $('issue-name').value.trim();
+      const borrower_ref = $('issue-ref').value.trim();
+      const days = $('issue-days').value;
+
+      if (!book_id || isNaN(parseInt(book_id, 10))) {
+        showToast('Please select a book from the list', 'error');
+        $('issue-book')?.focus();
+        return;
+      }
+
+      if (!borrower_name) {
+        showToast('Please enter borrower full name', 'error');
+        $('issue-name')?.focus();
+        return;
+      }
+
+      try {
+        await apiRequest('/borrowings', 'POST', {
+          book_id: parseInt(book_id, 10),
+          borrower_name,
+          borrower_ref: borrower_ref || null,
+          days: days ? parseInt(days, 10) : undefined
+        });
+        showToast('Book successfully issued to ' + borrower_name, 'success');
+        navigateTo('borrowings');
+      } catch (err) {}
+    }
+
+    async function returnBook(borrowingId) {
+      confirmDialog('Return Book', 'Mark this book loan as returned to library inventory?', async () => {
+        try {
+          const res = await apiRequest(`/borrowings/${borrowingId}/return`, 'POST');
+          const fineMsg = res.fine > 0 ? ` (Overdue fine accrued: $${Number(res.fine).toFixed(2)})` : '';
+          showToast(`Book successfully marked as returned${fineMsg}`, 'success');
+          navigateTo(state.currentView || 'borrowings');
+        } catch (err) {}
+      });
+    }
+
+    // Borrowing Renewal / Loan Extension Actions
+    let currentRenewRecord = null;
+
+    function openRenewModalById(id) {
+      let b = (state.currentBorrowings || []).find(item => item.id == id);
+      if (!b && state.recentTransactions) {
+        b = state.recentTransactions.find(item => item.id == id);
+      }
+      if (b) {
+        openRenewModal(b.id, b.title, b.borrower_name, b.due_date, b.renewal_count || 0);
+      } else {
+        openRenewModal(id, 'Book Loan #' + id, '', '', 0);
+      }
+    }
+
+    function openRenewModal(id, title, borrowerName, currentDue, renewalCount) {
+      const cleanDue = String(currentDue || '').slice(0, 10);
+      const count = Number(renewalCount) || 0;
+      currentRenewRecord = { id, title, borrowerName, currentDue: cleanDue, renewalCount: count };
+      $('renew-borrowing-id').value = id;
+      $('renew-book-title').textContent = title;
+      if ($('renew-borrower-name')) {
+        $('renew-borrower-name').textContent = borrowerName || '-';
+      }
+      $('renew-current-due').textContent = cleanDue || 'N/A';
+      $('renew-count-display').textContent = `${count} of 5`;
+
+      const isMax = count >= 5;
+      if ($('renew-max-warning')) $('renew-max-warning').style.display = isMax ? 'block' : 'none';
+      if ($('renew-submit-btn')) $('renew-submit-btn').disabled = isMax;
+
+      setRenewDays(14);
+      openModal('renew-modal');
+    }
+
+    function setRenewDays(days) {
+      $('renew-days').value = days;
+      const b7 = $('btn-renew-7');
+      const b14 = $('btn-renew-14');
+      if (b7 && b14) {
+        b7.className = days === 7 ? 'btn-primary btn-sm' : 'btn-secondary btn-sm';
+        b14.className = days === 14 ? 'btn-primary btn-sm' : 'btn-secondary btn-sm';
+      }
+      updateRenewPreview();
+    }
+
+    function updateRenewPreview() {
+      if (!currentRenewRecord) return;
+      const days = parseInt($('renew-days').value, 10) || 14;
+
+      let curY, curM, curD;
+      const dueStr = String(currentRenewRecord.currentDue || '').slice(0, 10);
+      if (dueStr.includes('-')) {
+        const parts = dueStr.split('-');
+        curY = parseInt(parts[0], 10);
+        curM = parseInt(parts[1], 10) - 1;
+        curD = parseInt(parts[2], 10);
+      } else {
+        const now = new Date();
+        curY = now.getFullYear();
+        curM = now.getMonth();
+        curD = now.getDate();
+      }
+
+      const now = new Date();
+      const curDue = new Date(curY, curM, curD);
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      const base = curDue > today ? new Date(curDue) : new Date(today);
+      base.setDate(base.getDate() + days);
+
+      const y = base.getFullYear();
+      const m = String(base.getMonth() + 1).padStart(2, '0');
+      const d = String(base.getDate()).padStart(2, '0');
+      $('renew-new-due-preview').textContent = `${y}-${m}-${d} (+${days} days)`;
+    }
+
+    async function submitRenewModal() {
+      const id = $('renew-borrowing-id').value;
+      const days = parseInt($('renew-days').value, 10);
+
+      if (isNaN(days) || days < 1 || days > 90) {
+        showToast('Please enter a valid extension duration between 1 and 90 days', 'error');
+        return;
+      }
+
+      try {
+        const res = await apiRequest(`/borrowings/${id}/renew`, 'POST', { days });
+        closeModal('renew-modal');
+        showToast(res.message || `Loan extended successfully by +${days} days!`, 'success');
+        navigateTo(state.currentView || 'borrowings');
+      } catch (err) {}
+    }
+
+    // Librarian Management Actions
+    async function createLibrarian() {
+      const staff_no = $('nl-staffno').value.trim();
+      const name = $('nl-name').value.trim();
+      const email = $('nl-email').value.trim();
+      const phone = $('nl-phone').value.trim();
+      const password = $('nl-password').value;
+
+      if (!staff_no || !name || !email || !password) {
+        showToast('Please fill all mandatory fields (Staff No, Name, Email, Password)', 'error');
+        return;
+      }
+
+      if (password.length < 8) {
+        showToast('Password must be at least 8 characters long', 'error');
+        return;
+      }
+
+      try {
+        await apiRequest('/librarians', 'POST', { staff_no, name, email, phone: phone || null, password });
+        showToast('Librarian account created successfully', 'success');
+        navigateTo('librarians');
+      } catch (err) {}
+    }
+
+    async function toggleLibrarianStatus(librarianId, newActiveState) {
+      try {
+        const librarians = await apiRequest('/librarians');
+        const lib = librarians.find(l => l.id === librarianId);
+        if (!lib) return;
+
+        await apiRequest(`/librarians/${librarianId}`, 'PUT', {
+          staff_no: lib.staff_no,
+          name: lib.name,
+          email: lib.email,
+          phone: lib.phone,
+          active: newActiveState
+        });
+
+        showToast(`Librarian account ${newActiveState ? 'activated' : 'deactivated'}`, 'success');
+        navigateTo('librarians');
+      } catch (err) {}
+    }
+
+    function openResetPasswordModal(librarianId) {
+      $('rpm-id').value = librarianId;
+      $('rpm-password').value = '';
+      openModal('reset-password-modal');
+    }
+
+    async function submitResetPassword() {
+      const id = $('rpm-id').value;
+      const password = $('rpm-password').value;
+
+      if (!password || password.length < 8) {
+        showToast('New password must be at least 8 characters long', 'error');
+        return;
+      }
+
+      try {
+        await apiRequest(`/librarians/${id}/reset-password`, 'POST', { password });
+        showToast('Password updated successfully', 'success');
+        closeModal('reset-password-modal');
+      } catch (err) {}
+    }
+
+    function deleteLibrarian(librarianId) {
+      confirmDialog('Delete Librarian', 'Are you sure you want to delete this librarian account?', async () => {
+        try {
+          await apiRequest(`/librarians/${librarianId}`, 'DELETE');
+          showToast('Librarian deleted successfully', 'success');
+          navigateTo('librarians');
+        } catch (err) {}
+      });
+    }
+
+    // Keyboard Shortcuts & Event Listeners
+    $('login-password')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+    $('login-email')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleLogin();
+    });
+
+    // Close modals on Escape key
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-backdrop.active').forEach(m => m.classList.remove('active'));
+      }
+    });
+
+    // Startup Initialization
+    (async () => {
+      try {
+        const res = await fetch('/api/config');
+        if (res.ok) state.tz = (await res.json()).timezone || 'UTC';
+      } catch (_) {
+        /* keep UTC if the config endpoint is unreachable */
+      }
+      if (state.token) initApp();
+    })();
+  </script>
+</body>
+</html>
