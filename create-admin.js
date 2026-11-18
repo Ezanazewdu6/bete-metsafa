@@ -31,9 +31,9 @@ function ask(question, hidden = false) {
 
 (async () => {
   try {
-    const name = (process.env.NEW_ADMIN_NAME || (await ask('Full name: '))).trim();
-    const email = (process.env.NEW_ADMIN_EMAIL || (await ask('Email: '))).trim().toLowerCase();
-    const password = process.env.NEW_ADMIN_PASSWORD || (await ask('Password (8-72 characters): ', true));
+    const name = (process.env.ADMIN_NAME || process.env.NEW_ADMIN_NAME || (await ask('Full name: '))).trim();
+    const email = (process.env.ADMIN_EMAIL || process.env.NEW_ADMIN_EMAIL || (await ask('Email: '))).trim().toLowerCase();
+    const password = process.env.ADMIN_PASSWORD || process.env.NEW_ADMIN_PASSWORD || (await ask('Password (8-72 characters): ', true));
 
     if (!name || name.length > 100) throw new Error('Name is required (max 100 characters).');
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 120) throw new Error('Please enter a valid email address.');
@@ -41,7 +41,10 @@ function ask(question, hidden = false) {
 
     const [[admin]] = await db.query('SELECT id FROM admins WHERE email = ?', [email]);
     const [[lib]] = await db.query('SELECT id FROM librarians WHERE email = ?', [email]);
-    if (admin || lib) throw new Error('An account with this email already exists.');
+    if (admin || lib) {
+      console.log(`\nAccount with email ${email} already exists.`);
+      return;
+    }
 
     await db.query('INSERT INTO admins (name, email, password_hash) VALUES (?, ?, ?)', [
       name,
